@@ -52,8 +52,10 @@ mean_g=means["G"],
 mean_b=means["B"])
 
 # initialize the optimizer
-opt = mx.optimizer.SGD(learning_rate=1e-3, momentum=0.9, wd=0.0005,
-rescale_grad=1.0 / batchSize)
+# opt = mx.optimizer.SGD(learning_rate=1e-2, momentum=0.9, wd=0.0005,
+#                        rescale_grad=1.0 / batchSize)
+opt = mx.optimizer.Adam(learning_rate=1e-4, wd=0.0005,
+                       rescale_grad=1.0 / batchSize)
 
 # construct the checkpoints path, initialize the model argument and
 # auxiliary parameters
@@ -78,8 +80,8 @@ else:
 
 # compile the model
 model = mx.model.FeedForward(
-    # ctx=[mx.gpu(2), mx.gpu(3)],
-    ctx=[mx.cpu(0), mx.cpu(1)],
+    ctx=[mx.gpu(0), mx.gpu(0)],
+    # ctx=[mx.cpu(0), mx.cpu(1)],
     symbol=model,
     initializer=mx.initializer.Xavier(),
     arg_params=argParams,
