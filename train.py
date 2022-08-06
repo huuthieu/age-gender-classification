@@ -22,7 +22,7 @@ args = vars(ap.parse_args())
 
 # set the logging level and output file
 logging.basicConfig(level=logging.DEBUG,
-    filename="training_{}.log".format(args["start_epoch"]),
+    filename="/content/drive/MyDrive/Colab Notebooks/age_checkpoint/trained/training_{}.log".format(args["start_epoch"]),
     filemode="w")
 
 # determine the batch and load the mean pixel values
