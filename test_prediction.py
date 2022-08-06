@@ -7,7 +7,7 @@ from pyimagesearch.preprocessing import ImageToArrayPreprocessor
 from pyimagesearch.preprocessing import SimplePreprocessor
 from pyimagesearch.preprocessing import MeanPreprocessor
 from pyimagesearch.preprocessing import CropPreprocessor
-from pyimagesearch.utils import AgeGenderHelper
+from pyimagesearch.utils.agegenderhelper import AgeGenderHelper
 from imutils.face_utils import FaceAligner
 from imutils import face_utils
 from imutils import paths
@@ -86,7 +86,7 @@ for imagePath in imagePaths:
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
     # detect faces in the grayscale image
-    rects = detector(gray, 1)
+    rects = detector(gray, 2)
 
     # loop over the face detections
     for rect in rects:
@@ -127,22 +127,18 @@ for imagePath in imagePaths:
             # predictions for the patches
             agePreds = agePreds.mean(axis=0)
             genderPreds = genderPreds.mean(axis=0)   
-
             # visualize the age and gender predictions
             ageCanvas = AgeGenderHelper.visualizeAge(agePreds, ageLE)
             genderCanvas = AgeGenderHelper.visualizeGender(genderPreds,
                 genderLE)
 
+            img_name = os.path.basename(imagePath)
+
             # draw the bounding box around the face
             clone = image.copy()
             (x, y, w, h) = face_utils.rect_to_bb(rect)
             cv2.rectangle(clone, (x, y), (x + w, y + h), (0, 255, 0), 2)
-
-            # show the output image
-            cv2.imshow("Input", clone)
-            cv2.imshow("Face", face)
-            cv2.imshow("Age Probabilities", ageCanvas)
-            cv2.imshow("Gender Probabilities", genderCanvas)
-            cv2.waitKey(0) 
-
-#python test_prediction.py --image examples
+            cv2.imwrite("{}results/{}_Input.jpg".format(deploy.ROOT, img_name), clone)
+            cv2.imwrite("{}results/{}_Face.jpg".format(deploy.ROOT, img_name), face)
+            cv2.imwrite("{}results/{}_AgeProbabilities.jpg".format(deploy.ROOT, img_name), ageCanvas)
+            cv2.imwrite("{}results/{}_GenderProbabilities.jpg".format(deploy.ROOT, img_name), genderCanvas)

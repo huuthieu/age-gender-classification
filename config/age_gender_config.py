@@ -8,8 +8,9 @@ DATASET_TYPE = "age"
 
 # define the base paths to the faces dataset and output path
 # BASE_PATH = "/raid/datasets/adience"
-BASE_PATH = "O:/POSTGRAD/HK2/6. ML - Sun/age_gender/datasets/adience"
-OUTPUT_BASE = "O:/POSTGRAD/HK2/6. ML - Sun/age_gender/output"
+ROOT = '/content/age-gender-classification/'
+BASE_PATH = ROOT + "adience"
+OUTPUT_BASE = ROOT+ "output"
 MX_OUTPUT = BASE_PATH
 
 # based on the base path, derive the images path and folds path
