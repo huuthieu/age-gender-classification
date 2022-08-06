@@ -88,61 +88,61 @@ for imagePath in imagePaths:
     # detect faces in the grayscale image
     rects = detector(gray, 1)
 
-# loop over the face detections
-for rect in rects:
-    # determine the facial landmarks for the face region, then
-    # align the face
-    shape = predictor(gray, rect)
-    face = fa.align(image, gray, rect)
+    # loop over the face detections
+    for rect in rects:
+        # determine the facial landmarks for the face region, then
+        # align the face
+        shape = predictor(gray, rect)
+        face = fa.align(image, gray, rect)
 
-    # resize the face to a fixed size, then extract 10-crop
-    # patches from it
-    face = sp.preprocess(face)
-    patches = cp.preprocess(face)
+        # resize the face to a fixed size, then extract 10-crop
+        # patches from it
+        face = sp.preprocess(face)
+        patches = cp.preprocess(face)
 
-    # allocate memory for the age and gender patches
-    agePatches = np.zeros((patches.shape[0], 3, 227, 227),
-        dtype="float")
-    genderPatches = np.zeros((patches.shape[0], 3, 227, 227),
-        dtype="float")
+        # allocate memory for the age and gender patches
+        agePatches = np.zeros((patches.shape[0], 3, 227, 227),
+            dtype="float")
+        genderPatches = np.zeros((patches.shape[0], 3, 227, 227),
+            dtype="float")
 
-    # loop over the patches
-    for j in np.arange(0, patches.shape[0]):
-        # perform mean subtraction on the patch
-        agePatch = ageMP.preprocess(patches[j])
-        genderPatch = genderMP.preprocess(patches[j])
-        agePatch = iap.preprocess(agePatch)
-        genderPatch = iap.preprocess(genderPatch)
+        # loop over the patches
+        for j in np.arange(0, patches.shape[0]):
+            # perform mean subtraction on the patch
+            agePatch = ageMP.preprocess(patches[j])
+            genderPatch = genderMP.preprocess(patches[j])
+            agePatch = iap.preprocess(agePatch)
+            genderPatch = iap.preprocess(genderPatch)
 
-        # update the respective patches lists
-        agePatches[j] = agePatch
-        genderPatches[j] = genderPatch
-    
-        # make predictions on age and gender based on the extracted
-        # patches
-        agePreds = ageModel.predict(agePatches)
-        genderPreds = genderModel.predict(genderPatches)
+            # update the respective patches lists
+            agePatches[j] = agePatch
+            genderPatches[j] = genderPatch
+        
+            # make predictions on age and gender based on the extracted
+            # patches
+            agePreds = ageModel.predict(agePatches)
+            genderPreds = genderModel.predict(genderPatches)
 
-        # compute the average for each class label based on the
-        # predictions for the patches
-        agePreds = agePreds.mean(axis=0)
-        genderPreds = genderPreds.mean(axis=0)   
+            # compute the average for each class label based on the
+            # predictions for the patches
+            agePreds = agePreds.mean(axis=0)
+            genderPreds = genderPreds.mean(axis=0)   
 
-        # visualize the age and gender predictions
-        ageCanvas = AgeGenderHelper.visualizeAge(agePreds, ageLE)
-        genderCanvas = AgeGenderHelper.visualizeGender(genderPreds,
-            genderLE)
+            # visualize the age and gender predictions
+            ageCanvas = AgeGenderHelper.visualizeAge(agePreds, ageLE)
+            genderCanvas = AgeGenderHelper.visualizeGender(genderPreds,
+                genderLE)
 
-        # draw the bounding box around the face
-        clone = image.copy()
-        (x, y, w, h) = face_utils.rect_to_bb(rect)
-        cv2.rectangle(clone, (x, y), (x + w, y + h), (0, 255, 0), 2)
+            # draw the bounding box around the face
+            clone = image.copy()
+            (x, y, w, h) = face_utils.rect_to_bb(rect)
+            cv2.rectangle(clone, (x, y), (x + w, y + h), (0, 255, 0), 2)
 
-        # show the output image
-        cv2.imshow("Input", clone)
-        cv2.imshow("Face", face)
-        cv2.imshow("Age Probabilities", ageCanvas)
-        cv2.imshow("Gender Probabilities", genderCanvas)
-        cv2.waitKey(0) 
+            # show the output image
+            cv2.imshow("Input", clone)
+            cv2.imshow("Face", face)
+            cv2.imshow("Age Probabilities", ageCanvas)
+            cv2.imshow("Gender Probabilities", genderCanvas)
+            cv2.waitKey(0) 
 
-        #python test_prediction.py --image examples
+#python test_prediction.py --image examples
